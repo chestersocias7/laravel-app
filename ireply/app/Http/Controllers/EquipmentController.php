@@ -1,11 +1,15 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
 class EquipmentController extends Controller
 {
+        public function archived()
+        {
+            $equipment = \App\Models\Equipment::where('status', 'archived')->get();
+            return view('equipment.archived', compact('equipment'));
+        }
     public function index()
     {
         $equipment = \App\Models\Equipment::where('status', '!=', 'archived')->get();

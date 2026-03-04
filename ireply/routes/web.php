@@ -24,15 +24,18 @@ Route::prefix('requests')->group(function () {
 // Activity logs
 Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity_logs.index');
 
-// Admin
-Route::prefix('admin')->group(function () {
+// Admin (protected by role:admin)
+Route::prefix('admin')->middleware('role:admin')->group(function () {
 	Route::get('/', [AdminController::class, 'index'])->name('admin.index');
 	Route::get('/roles', [AdminController::class, 'manageRoles'])->name('admin.roles');
+	Route::patch('/roles/{id}', [AdminController::class, 'updateRole'])->name('admin.roles.update');
+	Route::delete('/roles/{id}', [AdminController::class, 'deleteUser'])->name('admin.roles.delete');
 });
 
-// Equipment management
-Route::prefix('equipment')->group(function () {
+// Equipment management (protected by role:admin)
+Route::prefix('equipment')->middleware('role:admin')->group(function () {
 	Route::get('/', [EquipmentController::class, 'index'])->name('equipment.index');
+	Route::get('/archived', [EquipmentController::class, 'archived'])->name('equipment.archived');
 	Route::get('/add', [EquipmentController::class, 'create'])->name('equipment.create');
 	Route::post('/add', [EquipmentController::class, 'store'])->name('equipment.store');
 	Route::get('/edit/{id}', [EquipmentController::class, 'edit'])->name('equipment.edit');

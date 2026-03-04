@@ -4,24 +4,72 @@
     <title>@yield('title', 'iReply App')</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <style>
-        body { min-height: 100vh; display: flex; flex-direction: column; }
+        html { box-sizing: border-box; }
+        *, *:before, *:after { box-sizing: inherit; }
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+            background: #f4f6fa;
+            color: #222;
+        }
         .main-content { flex: 1 0 auto; }
         .sidebar {
             min-width: 220px;
             max-width: 220px;
-            background: #f8f9fa;
+            background: #212529;
             min-height: 100vh;
             border-right: 1px solid #dee2e6;
         }
-        .sidebar .nav-link.active {
-            background: #e9ecef;
-            font-weight: bold;
+        .sidebar .nav-link {
+            color: #fff;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            transition: background 0.2s, color 0.2s;
+        }
+        .sidebar .nav-link.active, .sidebar .nav-link:hover {
+            background: #0d6efd;
+            color: #fff;
         }
         .footer {
-            background: #f8f9fa;
+            background: #212529;
             border-top: 1px solid #dee2e6;
             padding: 1rem 0;
             text-align: center;
+            color: #fff;
+        }
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+        .card-header {
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            font-weight: 500;
+        }
+        .btn-primary, .btn-primary:focus {
+            background: #0d6efd;
+            border-color: #0d6efd;
+            box-shadow: none;
+        }
+        .btn-primary:hover {
+            background: #0b5ed7;
+            border-color: #0a58ca;
+        }
+        .table {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13,110,253,.15);
+        }
+        .alert {
+            border-radius: 8px;
         }
     </style>
 </head>
