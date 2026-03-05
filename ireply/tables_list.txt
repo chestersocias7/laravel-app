@@ -1,0 +1,14 @@
+﻿Tables in 'ireply':
+- activity_logs
+- cache
+- cache_locks
+- employees
+- equipment
+- failed_jobs
+- job_batches
+- jobs
+- migrations
+- password_reset_tokens
+- requests
+- sessions
+- users

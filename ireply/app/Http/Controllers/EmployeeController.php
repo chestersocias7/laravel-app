@@ -24,7 +24,12 @@ class EmployeeController extends Controller
             'email' => 'required|email|unique:employees,email',
             'position' => 'nullable|string|max:255',
         ]);
-        \App\Models\Employee::create($validated);
+        $emp = \App\Models\Employee::create($validated);
+        \App\Models\ActivityLog::create([
+            'employee_id' => $emp->id,
+            'action' => 'added_employee',
+            'details' => 'New employee added: ' . $emp->name,
+        ]);
         return redirect()->route('employees.index')->with('success', 'Employee added successfully.');
     }
 
@@ -43,6 +48,11 @@ class EmployeeController extends Controller
             'position' => 'nullable|string|max:255',
         ]);
         $employee->update($validated);
+        \App\Models\ActivityLog::create([
+            'employee_id' => $employee->id,
+            'action' => 'updated_employee',
+            'details' => 'Employee details updated: ' . $employee->name,
+        ]);
         return redirect()->route('employees.index')->with('success', 'Employee updated successfully.');
     }
 
@@ -50,6 +60,11 @@ class EmployeeController extends Controller
     {
         $employee = \App\Models\Employee::findOrFail($id);
         $employee->delete();
+        \App\Models\ActivityLog::create([
+            'employee_id' => 1, // System or Admin ID since employee is gone
+            'action' => 'deleted_employee',
+            'details' => 'Deleted employee ID: ' . $id,
+        ]);
         return redirect()->route('employees.index')->with('success', 'Employee deleted successfully.');
     }
 

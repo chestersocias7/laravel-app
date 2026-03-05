@@ -26,8 +26,12 @@ class RequestController extends Controller
             'equipment_id' => 'required|exists:equipment,id',
             'reason' => 'nullable|string',
         ]);
-        \App\Models\Request::create($validated);
-        // Optionally log activity here
+        $req = \App\Models\Request::create($validated);
+        \App\Models\ActivityLog::create([
+            'employee_id' => $validated['employee_id'],
+            'action' => 'submitted_request',
+            'details' => 'Submitted request for equipment ID: ' . $validated['equipment_id'],
+        ]);
         return redirect()->route('requests.index')->with('success', 'Request submitted successfully.');
     }
 
@@ -36,7 +40,11 @@ class RequestController extends Controller
         $req = \App\Models\Request::findOrFail($id);
         $req->status = 'approved';
         $req->save();
-        // Optionally log activity here
+        \App\Models\ActivityLog::create([
+            'employee_id' => $req->employee_id,
+            'action' => 'approved_request',
+            'details' => 'Approved request ID: ' . $id,
+        ]);
         return redirect()->route('requests.index')->with('success', 'Request approved.');
     }
 
@@ -45,7 +53,11 @@ class RequestController extends Controller
         $req = \App\Models\Request::findOrFail($id);
         $req->status = 'rejected';
         $req->save();
-        // Optionally log activity here
+        \App\Models\ActivityLog::create([
+            'employee_id' => $req->employee_id,
+            'action' => 'rejected_request',
+            'details' => 'Rejected request ID: ' . $id,
+        ]);
         return redirect()->route('requests.index')->with('success', 'Request rejected.');
     }
 }

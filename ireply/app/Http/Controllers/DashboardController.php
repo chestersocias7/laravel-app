@@ -8,7 +8,12 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // TODO: Fetch summary data for current requests
-        return view('dashboard.index');
+        $stats = [
+            'employees' => \App\Models\Employee::count(),
+            'equipment' => \App\Models\Equipment::count(),
+            'requests' => \App\Models\Request::count(),
+            'pending_requests' => \App\Models\Request::where('status', 'pending')->count(),
+        ];
+        return view('dashboard.index', compact('stats'));
     }
 }

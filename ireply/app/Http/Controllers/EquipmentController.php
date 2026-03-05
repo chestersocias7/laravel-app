@@ -1,6 +1,5 @@
 <?php
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 
 class EquipmentController extends Controller
@@ -29,6 +28,11 @@ class EquipmentController extends Controller
             'description' => 'nullable|string',
         ]);
         \App\Models\Equipment::create($validated);
+        \App\Models\ActivityLog::create([
+            'employee_id' => auth()->id() ?: 1, // Fallback if no auth
+            'action' => 'added_equipment',
+            'details' => 'Added equipment: ' . $validated['name'],
+        ]);
         return redirect()->route('equipment.index')->with('success', 'Equipment added successfully.');
     }
 
@@ -47,6 +51,11 @@ class EquipmentController extends Controller
             'description' => 'nullable|string',
         ]);
         $equipment->update($validated);
+        \App\Models\ActivityLog::create([
+            'employee_id' => auth()->id() ?: 1,
+            'action' => 'updated_equipment',
+            'details' => 'Updated equipment: ' . $equipment->name,
+        ]);
         return redirect()->route('equipment.index')->with('success', 'Equipment updated successfully.');
     }
 
@@ -55,6 +64,11 @@ class EquipmentController extends Controller
         $equipment = \App\Models\Equipment::findOrFail($id);
         $equipment->status = 'archived';
         $equipment->save();
+        \App\Models\ActivityLog::create([
+            'employee_id' => auth()->id() ?: 1,
+            'action' => 'archived_equipment',
+            'details' => 'Archived equipment: ' . $equipment->name,
+        ]);
         return redirect()->route('equipment.index')->with('success', 'Equipment archived successfully.');
     }
 
@@ -62,6 +76,11 @@ class EquipmentController extends Controller
     {
         $equipment = \App\Models\Equipment::findOrFail($id);
         $equipment->delete();
+        \App\Models\ActivityLog::create([
+            'employee_id' => auth()->id() ?: 1,
+            'action' => 'deleted_equipment',
+            'details' => 'Deleted equipment ID: ' . $id,
+        ]);
         return redirect()->route('equipment.index')->with('success', 'Equipment deleted successfully.');
     }
 }
