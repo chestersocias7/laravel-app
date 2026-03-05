@@ -14,6 +14,7 @@ class DashboardController extends Controller
             'requests' => \App\Models\Request::count(),
             'pending_requests' => \App\Models\Request::where('status', 'pending')->count(),
         ];
-        return view('dashboard.index', compact('stats'));
+        $recentRequests = \App\Models\Request::with(['employee', 'equipment'])->latest()->take(5)->get();
+        return view('dashboard.index', compact('stats', 'recentRequests'));
     }
 }

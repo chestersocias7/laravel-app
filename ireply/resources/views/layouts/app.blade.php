@@ -3,6 +3,7 @@
 <head>
     <title>@yield('title', 'iReply App')</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <style>
         html { box-sizing: border-box; }
         *, *:before, *:after { box-sizing: inherit; }
@@ -77,21 +78,42 @@
     <header class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ url('/') }}">iReply App</a>
+            <div class="d-flex align-items-center">
+                @auth
+                    <span class="text-white me-3">Welcome, {{ auth()->user()->name }} ({{ ucfirst(auth()->user()->role) }})</span>
+                    <form action="{{ route('logout') }}" method="POST" class="m-0">
+                        @csrf
+                        <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" class="btn btn-outline-light btn-sm me-2">Login</a>
+                    <a href="{{ route('register') }}" class="btn btn-light btn-sm">Register</a>
+                @endauth
+            </div>
         </div>
     </header>
     <div class="container-fluid" style="flex:1 0 auto;">
         <div class="row">
+            @auth
             <nav class="col-md-2 d-none d-md-block sidebar py-4">
                 <ul class="nav flex-column">
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">Dashboard</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->is('employees*') ? 'active' : '' }}" href="{{ route('employees.index') }}">Employees</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->is('equipment*') ? 'active' : '' }}" href="{{ route('equipment.index') }}">Equipment</a></li>
+                    
+                    @if(auth()->user()->role === 'admin')
+                        <li class="nav-item"><a class="nav-link {{ request()->is('equipment*') ? 'active' : '' }}" href="{{ route('equipment.index') }}">Equipment</a></li>
+                    @endif
+                    
                     <li class="nav-item"><a class="nav-link {{ request()->is('requests*') ? 'active' : '' }}" href="{{ route('requests.index') }}">Requests</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->is('activity-logs') ? 'active' : '' }}" href="{{ route('activity_logs.index') }}">Activity Logs</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->is('admin*') ? 'active' : '' }}" href="{{ route('admin.index') }}">Admin</a></li>
+                    
+                    @if(auth()->user()->role === 'admin')
+                        <li class="nav-item"><a class="nav-link {{ request()->is('admin*') ? 'active' : '' }}" href="{{ route('admin.index') }}">Admin</a></li>
+                    @endif
                 </ul>
             </nav>
-            <main class="col-md-10 ms-sm-auto px-4 main-content py-4">
+            @endauth
+            <main class="{{ Auth::check() ? 'col-md-10 ms-sm-auto' : 'col-12' }} px-4 main-content py-4">
                 @if(session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         {{ session('success') }}
@@ -106,6 +128,17 @@
                     </div>
                 @endif
 
+                @if ($errors->any())
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
                 @yield('content')
             </main>
         </div>
@@ -115,5 +148,6 @@
             <span class="text-muted">&copy; {{ date('Y') }} iReply App. All rights reserved.</span>
         </div>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

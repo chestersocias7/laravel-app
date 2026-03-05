@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class ActivityLog extends Model
 {
+    protected $fillable = [
+        'employee_id',
+        'action',
+        'details',
+    ];
     public function employee()
     {
         return $this->belongsTo(Employee::class);

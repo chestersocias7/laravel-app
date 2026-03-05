@@ -29,7 +29,7 @@ class EquipmentController extends Controller
         ]);
         \App\Models\Equipment::create($validated);
         \App\Models\ActivityLog::create([
-            'employee_id' => auth()->id() ?: 1, // Fallback if no auth
+            'employee_id' => null,
             'action' => 'added_equipment',
             'details' => 'Added equipment: ' . $validated['name'],
         ]);
@@ -52,7 +52,7 @@ class EquipmentController extends Controller
         ]);
         $equipment->update($validated);
         \App\Models\ActivityLog::create([
-            'employee_id' => auth()->id() ?: 1,
+            'employee_id' => null,
             'action' => 'updated_equipment',
             'details' => 'Updated equipment: ' . $equipment->name,
         ]);
@@ -65,7 +65,7 @@ class EquipmentController extends Controller
         $equipment->status = 'archived';
         $equipment->save();
         \App\Models\ActivityLog::create([
-            'employee_id' => auth()->id() ?: 1,
+            'employee_id' => null,
             'action' => 'archived_equipment',
             'details' => 'Archived equipment: ' . $equipment->name,
         ]);
@@ -77,7 +77,7 @@ class EquipmentController extends Controller
         $equipment = \App\Models\Equipment::findOrFail($id);
         $equipment->delete();
         \App\Models\ActivityLog::create([
-            'employee_id' => auth()->id() ?: 1,
+            'employee_id' => null,
             'action' => 'deleted_equipment',
             'details' => 'Deleted equipment ID: ' . $id,
         ]);

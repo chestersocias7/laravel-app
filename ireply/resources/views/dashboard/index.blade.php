@@ -40,8 +40,50 @@
     </div>
 
     <div class="mt-4">
-        <h3>Recent Activity</h3>
-        <p class="text-muted">Summary / Bird's eye view of current requests will be displayed here.</p>
+        <h3>Recent Requests</h3>
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Employee</th>
+                                <th>Equipment</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($recentRequests as $request)
+                                <tr>
+                                    <td>{{ $request->employee->name }}</td>
+                                    <td>{{ $request->equipment->name }}</td>
+                                    <td>
+                                        @if($request->status == 'pending')
+                                            <span class="badge bg-warning text-dark">Pending</span>
+                                        @elseif($request->status == 'approved')
+                                            <span class="badge bg-success">Approved</span>
+                                        @else
+                                            <span class="badge bg-danger">Rejected</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $request->created_at->diffForHumans() }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center py-4">No recent requests.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            @if($recentRequests->count() > 0)
+                <div class="card-footer text-center">
+                    <a href="{{ route('requests.index') }}" class="btn btn-sm btn-link">View All Requests</a>
+                </div>
+            @endif
+        </div>
     </div>
 </div>
 @endsection

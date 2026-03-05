@@ -61,7 +61,7 @@ class EmployeeController extends Controller
         $employee = \App\Models\Employee::findOrFail($id);
         $employee->delete();
         \App\Models\ActivityLog::create([
-            'employee_id' => 1, // System or Admin ID since employee is gone
+            'employee_id' => null, // System or Admin action
             'action' => 'deleted_employee',
             'details' => 'Deleted employee ID: ' . $id,
         ]);
@@ -70,20 +70,23 @@ class EmployeeController extends Controller
 
     public function showRequests()
     {
-        // Show all requests
-        return view('employee.requests');
+        $requests = \App\Models\Request::with(['employee', 'equipment'])->latest()->get();
+        return view('employee.requests', compact('requests'));
     }
 
     public function showApproved()
     {
-        // Show approved requests
-        return view('employee.approved');
+        $requests = \App\Models\Request::with(['employee', 'equipment'])
+            ->where('status', 'approved')
+            ->latest()
+            ->get();
+        return view('employee.approved', compact('requests'));
     }
 
     public function showActivityLogs()
     {
-        // Show activity logs
-        return view('employee.activity_logs');
+        $logs = \App\Models\ActivityLog::with('employee')->latest()->get();
+        return view('employee.activity_logs', compact('logs'));
     }
 }
 

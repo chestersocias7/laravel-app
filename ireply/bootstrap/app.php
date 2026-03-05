@@ -14,6 +14,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
+        
+        $middleware->redirectGuestsTo('/login');
+        $middleware->redirectTo(
+            guests: '/login',
+            users: '/dashboard',
+        );
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
